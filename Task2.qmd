@@ -1,0 +1,253 @@
+---
+title: "Task1"
+author: "Dmytro Morozov"
+date: "10/27/2025"
+format:
+  html:
+    embed-resources: true
+editor: source
+---
+
+## Question 1 Atomic Types
+
+Create the following variables related to your chosen object:
+
+4 numeric values (e.g., temperature, elevation, number of cars, highest building) 3 integer values (e.g., population, area, number of shopping malls) 2 logical values (e.g., has_water, is_inhabited) 3 character values (e.g., name, region, category)
+
+My object is Kyiv city
+
+```{r}
+# numeric
+temperature <- 7.0
+meters_above_sea_level <- 131
+auto <- 3020000
+highest_building <- 141.0
+
+# integer
+population <- 3020228
+area <- 839 # km²
+shopping_malls <- 6
+
+# logical
+has_water <- TRUE
+is_inhabited <- TRUE
+
+# character
+name <- "Kyiv"
+region <- "Kyiv City"
+category <- "City"
+```
+
+## Question 2: Vectors
+
+Create three different vectors:
+
+Numeric vector combining all your numeric and integer variables. (Use c().)
+
+Sequence vector from any number between 10–50 to 100, choose step between 2 and 10. (Use seq() or :.)
+
+Logical vector of length 10 with random TRUE/FALSE values using sample().
+
+```{r}
+# Numeric vector combining all numeric and integer variables
+vec <- c(temperature, meters_above_sea_level, auto, highest_building, population, area, shopping_malls)
+
+# Sequence vector from any number between 10–50 to 100, choose step between 2 and 10
+vec_seq <- seq(from = 20, to = 100, by = 6)
+
+# Logical vector of length 10 with random TRUE/FALSE values using sample()
+vec_log <- sample(c(TRUE, FALSE), 10, replace = TRUE)
+```
+
+## Question 3: Matrix
+
+Create a 3×3 matrix with random numbers between -50 and 50 (using sample() or runif()), and name its rows and columns according to your theme. Then calculate row and column averages using rowMeans() and colMeans().
+
+```{r}
+# Create a 3×3 matrix with random numbers between -50 and 50
+m <- matrix(sample(-50:50, 9), nrow = 3, ncol = 3)
+
+# Name its rows and columns according to your theme
+rownames(m) <- c("District 1", "District 2", "District 3")
+colnames(m) <- c("Metric A", "Metric B", "Metric C")
+
+# Calculate row and column averages
+row_means <- rowMeans(m)
+col_means <- colMeans(m)
+```
+
+## Question 4: List
+
+Create a list that combines all your previous objects: atomic variables, vectors, and matrix. Add one extra element — a short description of your universe as a string.
+
+```{r}
+# Create a list that combines all your previous objects
+my_list <- list(
+  numeric_values = c(temperature, meters_above_sea_level, auto, highest_building),
+  integer_values = c(population, area, shopping_malls),
+  logical_values = c(has_water, is_inhabited),
+  character_values = c(name, region, category),
+  numeric_vector = vec,
+  sequence_vector = vec_seq,
+  logical_vector = vec_log,
+  matrix = m,
+  description = "Kyiv is the capital and largest city of Ukraine, known for its rich history and cultural heritage."
+)
+```
+
+## Question 5: Factor
+
+Create a factor variable representing categories within your universe.
+
+```{r}
+# Create a factor variable representing categories within your universe
+my_factor <- factor(c("Capital", "Large", "Historic", "Cultural", "Modern"), levels = c("Historic", "Cultural", "Modern", "Large", "Capital"))
+```
+
+## Question 6: Data Frame
+
+Create a data frame related to your object that includes:
+
+5–8 observations (rows)
+
+At least 3 columns of different data types (e.g., name, numeric value, logical flag, category) Then:
+
+Rename the columns using names() or colnames().
+
+Display its structure with str() and its summary with summary().
+
+Add a new column derived from the others (for example, a ratio or condition).
+
+```{r}
+# Create a data frame related to your object
+data <- data.frame(
+  name = c("Podil", "Pechersk", "Obolon", "Shevchenkivskyi", "Sviatoshynskyi"),
+  population = c(150000, 200000, 250000, 180000, 220000),
+  has_metro = c(TRUE, TRUE, TRUE, TRUE, FALSE),
+  district_type = c("Historic", "Government", "Residential", "Commercial", "Industrial")
+)
+
+# Rename the columns
+colnames(data) <- c("District Name", "Population", "Has Metro", "District Type")
+
+# Display its structure
+str(data)
+
+# Display its summary
+summary(data)
+
+# Add a new column derived from the others
+data$population_density <- data$Population / area
+```
+
+## Task 2: Querying and Subsetting Data
+
+### 2.1 Querying Vectors
+
+#### 2.1.1 Sequence Vector
+
+```{r}
+cat("\n2.1.1. Querying Sequence vector:\n")
+
+# Display single element
+print(vec_seq[3])
+
+# Display range of elements
+print(vec_seq[2:5])
+
+# Display elements greater than 50
+print(vec_seq[vec_seq > 50])
+```
+
+#### 2.1.2 Logical Vector
+
+```{r}
+cat("\n2.1.2. Querying Logical vector:\n")
+
+# Show TRUE elements
+print(vec_log[vec_log])
+
+# Show indices of TRUE elements
+print(which(vec_log))
+```
+
+---
+
+### 2.2 Querying Your “Universe” List
+
+```{r}
+cat("\n2.2. Querying List:\n")
+
+# Character values (from Task 1)
+print(my_list$character_values)
+
+# Show matrix
+print(my_list$matrix)
+
+# Show one numeric element
+print(my_list$numeric_values[2])
+```
+
+---
+
+### 2.3 Investigating Your Data Frame
+
+```{r}
+cat("\n2.3. Querying Data Frame:\n")
+
+# Display first 3 rows
+print(head(data, 3))
+
+# Display one specific value
+print(data[4, 1])
+
+# Display logical column
+print(data$`Has Metro`)
+
+# Subset where population > 200000
+df_subset <- data[data$Population > 200000, ]
+print(df_subset)
+
+# Subset for specific districts
+df_subset_2 <- data[data$`District Name` %in% c("Pechersk", "Obolon"), ]
+print(df_subset_2)
+```
+
+---
+
+### 2.4 Handling “Corrupted” Data (NA)
+
+```{r}
+cat("\n2.4. Handling NA Data:\n")
+
+# Create corrupted copy
+df_corrupted <- data
+df_corrupted[2, 3] <- NA
+df_corrupted[5, 2] <- NA
+df_corrupted[4, 5] <- NA
+
+# Count NA values
+print(sum(is.na(df_corrupted)))
+print(colSums(is.na(df_corrupted)))
+
+# Mean calculations
+print(mean(df_corrupted$Population))
+print(mean(df_corrupted$Population, na.rm = TRUE))
+
+# Remove NAs
+df_clean <- na.omit(df_corrupted)
+print(df_clean)
+```
+
+---
+
+### 2.5 Bonus Challenge: which()
+
+```{r}
+cat("\n2.5. Bonus: which.max() and which.min():\n")
+
+# Find highest population district
+highest_pop_index <- which.max(data$Population)
+print(highest_pop_index)
+print(data[highest_pop_index, ])
+```
