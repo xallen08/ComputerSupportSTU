@@ -1,0 +1,64 @@
+---
+author: Dmytro Morozov
+date: "11/25/2025"
+editor: source
+format:
+  html:
+    embed-resources: true
+title: "Task 3. Urban Noise Analysis"
+---
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+library(dplyr) 
+library(readr) 
+urban_noise <- read_csv("urban_noise_levels.csv")
+```
+
+### Question 1: What are the 10 loudest recorded noise measurements?
+
+```{r}
+urban_noise %>%
+  select(datetime, decibel_level, latitude, longitude) %>%
+  arrange(desc(decibel_level)) %>%
+  head(10)
+```
+
+### Question 2: How many measurements were recorded on weekends vs weekdays?
+
+```{r}
+urban_noise %>%
+  group_by(is_weekend) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count))
+```
+
+### Question 3: Which hours of the day have the highest average noise level?
+
+```{r}
+urban_noise %>%
+  group_by(hour) %>%
+  summarise(avg_noise = mean(decibel_level, na.rm = TRUE)) %>%
+  arrange(desc(avg_noise)) %>%
+  head(5)
+```
+
+### Question 4: Create a new column showing noise-to-traffic ratio.
+
+```{r}
+urban_noise %>%
+  mutate(noise_traffic_ratio = decibel_level / (vehicle_count + 1)) %>% 
+  select(datetime, decibel_level, vehicle_count, noise_traffic_ratio) %>%
+  arrange(desc(noise_traffic_ratio)) %>%
+  head(10)
+```
+
+### Question 5: Which environmental factor (temperature) corresponds to the highest average noise levels?
+
+```{r}
+urban_noise %>%
+  mutate(temp_group = cut(temperature_c,
+                          breaks = c(-Inf, 5, 10, 15, 20, 25, Inf),
+                          labels = c("very cold", "cold", "cool", "mild", "warm", "hot"))) %>%
+  group_by(temp_group) %>%
+  summarise(avg_noise = mean(decibel_level, na.rm = TRUE), count = n()) %>%
+  arrange(desc(avg_noise))
+```
