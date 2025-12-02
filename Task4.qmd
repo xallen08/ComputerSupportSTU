@@ -1,0 +1,92 @@
+---
+author: Dmytro Morozov
+date: "12/2/2025"
+editor: source
+format:
+  html:
+    embed-resources: true
+title: "Task 4-Toolkit. Urban Noise"
+---
+```{r setup, message=FALSE, warning=FALSE}
+library(dplyr)
+library(readr)
+library(lubridate)
+```
+
+# Task 4 – Building a Toolkit for the Urban Noise Dataset
+
+## 4.1 — Greeting Function
+
+```{r}
+welcome_to_my_universe <- function(Dmytro) {
+  cat("--------------------------------\n")
+  cat("Urban Noise Analysis Toolkit\n")
+  cat("Prepared by:", Dmytro, "\n")
+  cat("--------------------------------\n\n")
+}
+
+welcome_to_my_universe("Urban Noise Levels")
+```
+
+## 4.2 — Loading Function
+
+```{r}
+load_and_inspect <- function(file_path) {
+  library(readr)
+  library(dplyr)
+
+  data <- read_csv(file_path)
+
+  cat("--- Data Loaded Successfully ---\n")
+  print(glimpse(data))
+  cat("\n--- First 6 Rows ---\n")
+  print(head(data))
+
+  return(data)
+}
+
+urban_noise <- load_and_inspect("urban_noise_levels.csv")
+```
+
+## 4.3 — Query Function
+
+```{r}
+find_loudest_hours <- function(data, top_n = 5) {
+  result <- data %>%
+    group_by(hour) %>%
+    summarise(avg_noise = mean(decibel_level, na.rm = TRUE)) %>%
+    arrange(desc(avg_noise)) %>%
+    head(top_n)
+
+  return(result)
+}
+
+loudest_hours <- find_loudest_hours(urban_noise, 5)
+loudest_hours
+```
+
+## 4.4 — Reporting Function
+
+```{r}
+generate_report <- function(data, weekend_flag) {
+
+  filtered <- data %>%
+    filter(is_weekend == weekend_flag)
+
+  avg_noise <- mean(filtered$decibel_level, na.rm = TRUE)
+  max_noise <- max(filtered$decibel_level, na.rm = TRUE)
+  min_noise <- min(filtered$decibel_level, na.rm = TRUE)
+  count_records <- nrow(filtered)
+
+  cat("----------------------------------------\n")
+  cat("Report for is_weekend =", weekend_flag, "\n")
+  cat("Number of Records:", count_records, "\n")
+  cat("Average Noise Level:", round(avg_noise, 2), "\n")
+  cat("Maximum Noise Level:", max_noise, "\n")
+  cat("Minimum Noise Level:", min_noise, "\n")
+  cat("----------------------------------------\n\n")
+}
+
+generate_report(urban_noise, TRUE)
+generate_report(urban_noise, FALSE)
+```
