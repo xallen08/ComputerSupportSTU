@@ -1,0 +1,91 @@
+author: Dmytro Morozov
+date: "12/8/2025"
+editor: source
+format:
+  html:
+    embed-resources: true
+title: "Task 5 - Visualising Your Universe"
+---
+
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+load_and_inspect <- function(file_path) {
+  data <- read_csv(file_path)
+  print(glimpse(data))
+  return(data)
+}
+
+urban_noise <- load_and_inspect("urban_noise_levels.csv")
+```
+
+## 5.1 Base R Histogram
+
+```{r}
+hist(
+  urban_noise$decibel_level,
+  main = "Distribution of Noise Levels",
+  xlab = "Noise Level (dB)",
+  col = "lightblue",
+  border = "white"
+)
+```
+
+## 5.2 Scatter Plot
+
+```{r}
+ggplot(
+  data = urban_noise,
+  aes(x = temperature_c, y = decibel_level)
+) +
+  geom_point(alpha = 0.6, size = 2, colour = "blue") +
+  geom_smooth(colour = "gray") +
+  labs(
+    title = "Relationship Between Temperature and Noise Level",
+    x = "Temperature (°C)",
+    y = "Noise Level (dB)"
+  ) +
+  theme_minimal()
+```
+
+## 5.3 Boxplot
+
+```{r}
+ggplot(
+  data = urban_noise,
+  aes(x = factor(is_weekend), y = decibel_level, fill = factor(is_weekend))
+) +
+  geom_boxplot() +
+  labs(
+    title = "Noise Levels on Weekends vs Weekdays",
+    x = "Weekend (1 = Yes, 0 = No)",
+    y = "Noise Level (dB)"
+  ) +
+  theme_light() +
+  theme(legend.position = "none")
+```
+
+## 5.4 Faceted Histogram
+
+```{r}
+ggplot(
+  data = urban_noise,
+  aes(x = decibel_level)
+) +
+  geom_histogram(bins = 20, fill = "coral", color = "black") +
+  facet_wrap(~ is_weekend) +
+  labs(
+    title = "Noise Level Distribution on Weekends vs Weekdays",
+    x = "Noise Level (dB)",
+    y = "Count"
+  )
+```
+
+## 5.5 Export
+
+```{r}
+ggsave("temperature_vs_noise.png", width = 8, height = 6)
+```
